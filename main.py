@@ -58,11 +58,37 @@ outlook_count = len(outlook_array)
 internet_count = len(internet_array)
 team_count = len(teams_array)
 
+
+workbook = xlsxwriter.Workbook("Tickets.xlsx")
+worksheet = workbook.add_worksheet()
+
+array = [["Issues",vpn_text,internet_text,outlook,teams],
+         ["No of issues",vpn_count,outlook_count,internet_count,team_count]]
+
+row  = 0
+
+for column, data in enumerate(array):
+    worksheet.write_column(row,column,data)
+
+workbook.close()
+
 y_axis = [vpn_count,outlook_count,internet_count,team_count]
-plt.bar(issue_list, y_axis, color ='maroon',
-        width = 0.4)
+plt.bar(issue_list, y_axis, color ='maroon',width = 0.4)
  
 plt.xlabel("Reported Issues")
 plt.ylabel("No of issues ")
 plt.title("IT Tickets")
+fig1 = plt.gcf()
+
 plt.show()
+plt.draw()
+
+fig1.savefig("bar.png",dpi=150)
+wb = openpyxl.load_workbook("Tickets.xlsx")
+ws = wb.active
+
+img = openpyxl.drawing.image.Image("bar.png")
+img.anchor = "A8"
+
+ws.add_image(img)
+wb.save("Tickets.xlsx")
